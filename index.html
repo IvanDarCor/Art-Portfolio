@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ElArteBajoTierra</title>
+  <style>
+    :root {
+      --main-color: #ffffff;
+      --text-color: #333;
+      --bg-color: #f9f9f9;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Georgia, serif;
+      color: var(--text-color);
+      background: var(--bg-color);
+      line-height: 1.6;
+      padding-top: 40px;
+    }
+
+    /* ====== HEADER ORIGINAL ====== */
+    .header {
+      background: var(--main-color);
+      color: #fff;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      overflow: visible;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 0 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .header__logo {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin: 0;
+      padding: 0;
+      height: 300px;
+      width: auto;
+    }
+
+    .logo-img {
+      height: 200px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      position: relative;
+      top: 60px;
+      margin-left: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .logo-img:hover {
+      transform: scale(1.05);
+    }
+
+    .nav {
+      display: flex;
+      gap: 1.5rem;
+      margin-left: auto;
+    }
+
+    .nav__link {
+      color: #333030;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .burger {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .burger__line {
+      width: 25px;
+      height: 3px;
+      background: #312121;
+    }
+
+    /* ====== SECCIONES ====== */
+    .hero,
+    .section {
+      padding: 3rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero__title {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .hero__text {
+      font-size: 1.1rem;
+      text-align: left;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .projects__list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .project-card {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      width: 300px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+    }
+
+    /* ====== GALERÍA ====== */
+    .obras-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .obra-card {
+      background: #fff;
+      padding: 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .obra-card img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      cursor: pointer;
+      display: block;
+    }
+
+    .obra-caption {
+      display: none;
+    }
+
+    .obra-desc {
+      display: none;
+    }
+
+    /* ====== MODAL ====== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 3000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.95);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .modal .descripcion {
+      color: #fff;
+      font-size: 0.9rem;
+      margin-top: 15px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      max-width: 85%;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .modal img:hover+.descripcion {
+      opacity: 1;
+    }
+
+    .prev,
+    .next {
+      position: absolute;
+      top: 50%;
+      font-size: 40px;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+      padding: 10px;
+      transform: translateY(-50%);
+      transition: 0.3s;
+    }
+
+    .prev:hover,
+    .next:hover {
+      color: #bbb;
+    }
+
+    .prev {
+      left: 30px;
+    }
+
+    .next {
+      right: 30px;
+    }
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      color: white;
+      font-size: 35px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #bbb;
+    }
+
+    /* ====== VISIBILIDAD ====== */
+    .section,
+    .hero {
+      display: none;
+    }
+
+    .section.active,
+    .hero.active {
+      display: block;
+    }
+
+    .obra-video {
+      grid-column: span 2;
+      /* ocupa el espacio de dos columnas */
+    }
+
+    .obra-video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      aspect-ratio: 2 / 1;
+      /* relación más panorámica, ajusta si quieres */
+      border-radius: 10px;
+    }
+
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 768px) {
+      .logo-img {
+        height: 80px;
+        top: 5px;
+      }
+
+      .nav {
+        display: none;
+        flex-direction: column;
+        background: var(--main-color);
+        position: absolute;
+        top: 70px;
+        right: 0;
+        width: 200px;
+        padding: 1rem;
+      }
+
+      .nav.nav--active {
+        display: flex;
+      }
+
+      .burger {
+        display: flex !important;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2000;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ✅ HEADER ORIGINAL CONSERVADO -->
+  <header class="header">
+    <div class="header__inner">
+      <div class="header__logo">
+        <img src="logo.png" alt="Logo" class="logo-img">
+      </div>
+
+      <nav class="nav" id="nav">
+        <a class="nav__link" onclick="filterSection('procesoDetalle')">Proceso</a>
+        <a class="nav__link" onclick="filterSection('portafolioDetalle')">Portafolio</a>
+        <a class="nav__link" onclick="filterSection('referentesDetalle')">Referentes</a>
+        <a class="nav__link" onclick="resetSections()">Inicio</a>
+      </nav>
+
+      <div class="burger" id="burger">
+        <div class="burger__line"></div>
+        <div class="burger__line"></div>
+        <div class="burger__line"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ✅ SECCIONES DE INICIO Y RESÚMENES (SIN CAMBIO) -->
+  <section class="hero active" id="statement">
+    <h1 class="hero__title">Los animales como mensajeros de los dioses</h1>
+    <p class="hero__text">
+      Mi práctica explora la relación entre los humanos, los animales y la tierra. A través de la observación, la
+      fotografía y el grabado, represento a los animales como mensajeros entre lo visible y lo invisible, evocando
+      nuestra conexión ancestral con la naturaleza
+    </p>
+  </section>
+
+  <section class="section active" id="resumenes">
+    <div class="projects__list">
+      <div class="project-card" onclick="filterSection('procesoDetalle')">
+        <h3 class="project-card__title">Resumen del proceso artístico</h3>
+        <p class="project-card__text">El dibujo es mi forma de acercarme a los animales y al territorio, un ejercicio de
+          observación que revela la conexión entre lo visible y lo invisible.</p>
+      </div>
+      <div class="project-card" onclick="filterSection('portafolioDetalle')">
+        <h3 class="project-card__title">Obras destacadas</h3>
+        <p class="project-card__text">Cada obra nace del diálogo entre técnica y símbolo, donde animales y elementos
+          naturales se convierten en metáforas de memoria y presencia</p>
+      </div>
+      <div class="project-card" onclick="filterSection('referentesDetalle')">
+        <h3 class="project-card__title">Inspiraciones clave</h3>
+        <p class="project-card__text">Mis referentes provienen del arte, la naturaleza y lo ritual; voces que inspiran
+          mi búsqueda simbólica y visual</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ AQUÍ VAN TUS SECCIONES DE IMÁGENES -->
+  <!-- (solo ejemplo de estructura; las rutas siguen las de tu archivo original) -->
+
+  <section class="section" id="procesoDetalle">
+    <div class="obras-grid">
+      <div class="obra-card">
+        <img src="ImagenesProceso\Cupripennis.JPG" alt="Naturaleza">
+        <p class="obra-desc">Aglaeactis cupripennis, dibujo en rapidografo sobre
+          cartulina durex ,
+          Manizales 2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesProceso\Maculiventris.JPG" alt="Andrés Domínguez">
+        <p class="obra-desc">Anolis maculiventris, dibujo en rapidografo sobre
+          cartulina durex , Manizales 2025.</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesProceso\penelope.JPG" alt="Naturaleza">
+        <p class="obra-desc">Penelope montagni, dibujo en rapidografo sobre
+          cartulina durex , Manizales 2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesProceso\prismantis.JPG" alt="Naturaleza">
+        <p class="obra-desc">Pristimantis unistrigatus, dibujo en rapidografo sobre
+          cartulina durex ,
+          Manizales 2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesProceso\CollageProceso.png" alt="Naturaleza">
+        <p class="obra-desc">Collage a partir de las especies que habitan la región, Manizales 2025,
+          tomado del registro fotográfico</p>
+      </div>
+      <div class="obra-card obra-video">
+        <video width="640" height="360" controls autoplay loop muted>
+          <source src="Animales-Elementos.mp4" type="video/mp4">
+          Tu navegador no soporta el formato de video.
+        </video>
+      </div>
+      <!-- 🔹 (Mantén todas tus imágenes originales aquí igual que en tu archivo) -->
+    </div>
+  </section>
+
+  <section class="section" id="portafolioDetalle">
+    <div class="obras-grid">
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\DSC_0136 (1).JPG" alt="Pholis">
+        <p class="obra-desc">Yacumama, grabado en agua tinta 20x20cm, Manizales 2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\DSC_0161.JPG" alt="Andrés Domínguez">
+        <p class="obra-desc">Buteo, grabado en agua fuerte 20x20cm, Manizales
+          2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\DSC_0153.JPG" alt="Pholis">
+        <p class="obra-desc">Pholis, grabado en punta seca 20x20cm, Manizales 2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\DSC_0171.JPG" alt="Naturaleza">
+        <p class="obra-desc">Aglaia, grabado en punta seca 20x20cm, Manizales 2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\DSCF0556.JPG" alt="Naturaleza">
+        <p class="obra-desc">Mundo del fuego, linograbado 70*90cm, Manizales
+          2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\DSCF0442.JPG" alt="Naturaleza">
+        <p class="obra-desc">Mundo del aire, linograbado 70*90cm, Manizales
+          2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\Identidad.png" alt="Naturaleza">
+        <p class="obra-desc">Identidad, linograbado Digitalizado 55*35cm, Manizales
+          2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\Encuentro.jpg" alt="Naturaleza">
+        <p class="obra-desc">Encuentro, linograbado Digitalizado 55*55cm, Manizales
+          2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\Renacer.jpg" alt="Naturaleza">
+        <p class="obra-desc">Renacer, dibujo digital 35*55cm, Manizales
+          2025</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesPortafolio\CantodelSapo.png" alt="Naturaleza">
+        <p class="obra-desc">Canto de rana, fenaquitiscopio digital 55*55cm,
+          Manizales
+          2025</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="referentesDetalle">
+    <div class="obras-grid">
+      <div class="obra-card">
+        <img src="ImagenesReferentes/jaguar-andres-domiguez.jpg" alt="Andrés Domínguez">
+        <p class="obra-desc">Andres Dominguez, Jaguar Ambil, dibujo a base de
+          materiales organicos, 2015</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesReferentes\werjayo-oso-jose-ismael-manco.jpg" alt="Andrés Domínguez">
+        <p class="obra-desc">Jose Ismael Manco Parra, werjayo oso, dibujo en carbon
+          mineral sobre lienzo, 2010</p>
+
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesReferentes\Santamaria- pesces.jpg" alt="Naturaleza">
+        <p class="obra-desc">Susana Santamaria, Pesces, Grabado en agua fuerte,
+          2022</p>
+      </div>
+      <div class="obra-card">
+        <img src="ImagenesReferentes\smith_sojourn.jpg" alt="Naturaleza">
+        <p class="obra-desc">Kiki Smith, Sojourn, tejido en telar de jaquard, 2010</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ MODAL DE GALERÍA -->
+  <div class="modal" id="imageModal">
+    <span class="close" id="closeModal">&times;</span>
+    <span class="prev" id="prevBtn">&#10094;</span>
+    <img id="modalImg" src="">
+    <p class="descripcion" id="modalDesc"></p>
+    <span class="next" id="nextBtn">&#10095;</span>
+  </div>
+
+  <script>
+    /* ====== FUNCIONES DE NAVEGACIÓN ORIGINAL ====== */
+    const burger = document.getElementById('burger');
+    const nav = document.getElementById('nav');
+    burger.addEventListener('click', e => {
+      e.stopPropagation();
+      nav.classList.toggle('nav--active');
+    });
+    document.addEventListener('click', e => {
+      if (!nav.contains(e.target) && !burger.contains(e.target)) nav.classList.remove('nav--active');
+    });
+
+    function filterSection(id) {
+      document.querySelectorAll('.section, .hero').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function resetSections() {
+      document.querySelectorAll('.section, .hero').forEach(s => s.classList.remove('active'));
+      document.getElementById('statement').classList.add('active');
+      document.getElementById('resumenes').classList.add('active');
+    }
+
+    resetSections();
+
+    /* ====== MODAL FUNCIONAL ====== */
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+    const modalDesc = document.getElementById("modalDesc");
+    const closeModal = document.getElementById("closeModal");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let currentGallery = [];
+    let currentIndex = 0;
+
+    document.querySelectorAll(".obra-card img").forEach(img => {
+      img.addEventListener("click", e => {
+        const section = e.target.closest(".section");
+        currentGallery = [...section.querySelectorAll(".obra-card img")];
+        currentIndex = currentGallery.indexOf(e.target);
+        showModal();
+      });
+    });
+
+    function showModal() {
+      const img = currentGallery[currentIndex];
+      modalImg.src = img.src;
+      const desc = img.parentElement.querySelector(".obra-desc");
+      modalDesc.textContent = desc ? desc.textContent : "";
+      modal.style.display = "flex";
+    }
+
+    function closeModalFunc() {
+      modal.style.display = "none";
+    }
+
+    function changeImg(n) {
+      currentIndex = (currentIndex + n + currentGallery.length) % currentGallery.length;
+      showModal();
+    }
+
+    closeModal.addEventListener("click", closeModalFunc);
+    prevBtn.addEventListener("click", () => changeImg(-1));
+    nextBtn.addEventListener("click", () => changeImg(1));
+    modal.addEventListener("click", e => {
+      if (e.target === modal) closeModalFunc();
+    });
+  </script>
+</body>
+
+</html>
+
+
+</html>
+
+
